@@ -1,9 +1,105 @@
 <template>
-  <div class='container'>添加目录对话框</div>
+  <div class='container'>
+    <el-dialog
+  :title="`${showTitle}目录`"
+  :visible="showDialog"
+  width="25%"
+  @close="Close"
+>
+  <el-form  ref="formDataRef" :model="formData" :rules="formDataRules" label-width="80px">
+  <el-form-item label="所属学科" v-if="!$route.query.id">
+     <el-select v-model="formData.subjectID" placeholder="请选择" class="W80" @focus="selBtn">
+        <el-option
+        v-for="item in subjectList "
+         :key="item.value"
+         :label="item.label"
+          :value="item.value"></el-option>
+    </el-select>
+  </el-form-item>
+    <el-form-item label="目录名称" prop="directoryName">
+    <el-input v-model="formData.directoryName"></el-input>
+  </el-form-item>
+  <el-form-item>
+    <el-button @click="Close">取 消</el-button>
+    <el-button type="primary" @click="btnOk">确 定</el-button>
+  </el-form-item>
+  </el-form>
+
+</el-dialog>
+  </div>
 </template>
 
 <script>
-export default {}
+import { getSimpleList } from '@/api/hmmm/subjects.js'
+import { add, detail, update } from '@/api/hmmm/directorys.js'
+export default {
+  name: 'directoryAdd',
+  props: {
+    showDialog: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    return {
+      formData: {
+        subjectID: '',
+        directoryName: ''
+      },
+      formDataRules: {
+        directoryName: [{ required: true, message: '目录名称必填', trigger: 'blur' }]
+      },
+      subjectList: []
+    }
+  },
+  computed: {
+    showTitle () {
+      return this.formData.id ? '修改' : '新增'
+    }
+  },
+  methods: {
+    // 获取目录详情
+    async  getDetail (id) {
+      const { data } = await detail(id)
+      this.formData = data
+      // console.log(data)
+    },
+    async selBtn () {
+      const { data } = await getSimpleList(this.formData.subjectName)
+      this.subjectList = data
+    },
+    async btnOk () {
+      try {
+        await this.$refs.formDataRef.validate()
+        // 判断是编辑还是新增
+        if (this.formData.id) {
+          // 编辑
+          await update(this.formData)
+        } else {
+          await add(this.formData)
+        }
+        this.$message.success('添加目录成功')
+        // 通知父组件更新
+        this.$emit('update-directory')
+        this.$emit('update:showDialog', false)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    Close () {
+      this.$refs.formDataRef.resetFields()
+      this.formData = {
+        subjectName: '',
+        directoryName: ''
+      }
+      this.$emit('update:showDialog', false)
+    }
+  }
+}
 </script>
 
-<style scoped lang='less'></style>
+<style scoped lang='less'>
+.W80 {
+  width: 100%;
+}
+</style>

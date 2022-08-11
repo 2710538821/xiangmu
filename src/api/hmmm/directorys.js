@@ -7,27 +7,26 @@
  * 目录
  */
 
-import createAPI from "@/utils/request";
+import { createAPI } from '@/utils/request'
 
 // 目录列表
-export const list = data => createAPI("/direcotrys", "get", data);
+export const list = data => createAPI('/directorys', 'get', data)
 
 // 目录简单列表
-export const simple = data => createAPI("/direcotrys", "post");
+export const simple = data => createAPI('/direcotrys', 'post')
 
 // 目录详情
-export const detail = data =>
-  createAPI(`/direcotrys/${data.userId}`, "get", data);
+export const detail = id => createAPI(`/directorys/${id}`, 'get')
 
 // 目录添加
-export const add = data => createAPI("/direcotrys", "post", data);
+export const add = data => createAPI('/directorys', 'post', data)
 
 // 目录修改
-export const update = data => createAPI(`/direcotrys/${data.id}`, "put", data);
+// export const update = data => createAPI(`/direcotrys/${data.id}`, 'put', data)
+export const update = (data) => createAPI('/directorys/' + data.id, 'put', data)
 
 // 目录删除
-export const remove = data =>
-  createAPI(`/directorys/${data.id}`, "delete", data);
+export const remove = id => createAPI(`/directorys/${id}`, 'delete')
 
 // 目录状态
-export const changeState = data => createAPI(`/directorys/${data.id}`, "get");
+export const changeState = data => createAPI(`/directorys/${data.id}/${data.state}`, 'post', data)
