@@ -2,7 +2,7 @@
   <div class='container'>
 <el-dialog
   :title="`${showTitle}学科`"
-  :visible.sync="showDialog"
+  :visible="showDialog"
   width="25%"
   @close="Close"
 >
@@ -58,7 +58,6 @@ export default {
         return this.formData.isFrontDisplay === 1
       },
       set (val) {
-        console.log(val)
         this.formData.isFrontDisplay = val ? 1 : 0
       }
     }
@@ -84,7 +83,7 @@ export default {
         //  通知父组件更新列表
         this.$emit('updateSubject')
         this.$message.success(this.showTitle + '学科成功')
-        this.$emit('update:showDialog', false)
+        this.$emit('update:show-dialog', false)
       } catch (error) {
         console.log(error)
       }

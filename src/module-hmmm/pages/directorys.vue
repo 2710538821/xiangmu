@@ -1,18 +1,26 @@
 <template>
   <div class='container'>
     <el-card class="card-box">
+            <!-- 面包屑 -->
+ <div class="head-breadcrumb"  v-if="$route.query.id">
+       <el-breadcrumb separator-class="el-icon-arrow-right">
+  <el-breadcrumb-item :to="{ path: '/subjects/subjects' }">学科管理</el-breadcrumb-item>
+  <el-breadcrumb-item >{{subjectName}}</el-breadcrumb-item>
+  <el-breadcrumb-item>目录管理</el-breadcrumb-item>
+</el-breadcrumb>
+ </div>
        <!-- 搜索 -->
 <el-row type="flex">
  <el-col>
   <el-form :inline="true" ref="formDataRef" :model="formData">
      <el-form-item label="目录名称">
-    <el-input v-model="formData.directoryName"
+    <el-input v-model.trim="formData.directoryName"
      ></el-input>
   </el-form-item>
     <el-form-item label="状态">
       <el-select  placeholder="请选择" v-model="formData.state">
-      <el-option label="已禁用" :value="0"></el-option>
-      <el-option label="已启用" :value="1"></el-option>
+      <el-option label="已禁用" value="0"></el-option>
+      <el-option label="已启用" value="1"></el-option>
     </el-select>
   </el-form-item>
   <el-form-item>
@@ -33,7 +41,7 @@
 </el-row>
 <!-- 信息 -->
   <el-alert
-    :title="`数据一共${page.total}条`"
+    :title="`数据一共${total}条`"
     type="info"
     show-icon>
   </el-alert>
@@ -94,9 +102,12 @@
       </el-table-column>
     </el-table>
  <!-- 页码 -->
-      <PageTool :page.sync='page'/>
+      <PageTool :page='page' :total="total"/>
     </el-card>
-    <DirectorysAdd ref="DirectorysAddRef" :showDialog.sync="showDialog" @update-directory='getList'/>
+    <DirectorysAdd ref="DirectorysAddRef"
+    :showDialog.sync="showDialog"
+    :subjectName="subjectName"
+     @update-directory='getList(page)'/>
   </div>
 </template>
 
@@ -120,14 +131,17 @@ export default {
       tableData: [],
       page: {
         page: 1,
-        pagesize: 10,
-        total: 0
+        pagesize: 10
       },
-      showDialog: false
+      total: 0,
+      showDialog: false,
+      subjectName: ''
     }
   },
   created () {
-    this.getList()
+    this.subjectName = this.$route.query.name
+    this.getList(this.page)
+    // console.log(this.$route.query)
   },
   methods: {
     // 格式化时间
@@ -135,30 +149,58 @@ export default {
       return parseTime(time)
     },
     // 数据列表
-    async getList () {
-      const { data: { counts, items } } = await list(this.page)
-      this.tableData = items
-      this.page.total = counts
+    async getList (data) {
+      const { data: { counts, items } } = await list(data)
+      if (this.$route.query.id) {
+        // 从别的地方跳转过来的
+        this.tableData = items.filter(item => item.subjectName === this.subjectName)
+        this.total = this.tableData.length
+      } else {
+        this.tableData = items
+        this.total = counts
+      }
     },
     // 改变状态
     async onChangeState (row) {
       row.state = row.state === 1 ? 0 : 1
       await changeState(row)
-      this.getList()
+      this.$message.success('状态更改成功')
     },
     addDirectory () {
       this.showDialog = true
     },
-    searchBtn () {
-      this.getList()
+    async searchBtn () {
+      // 模糊查询
+      // 如果如果前面输入框有值，后面没值
+      // 如果前后都有值
+      // 如果前面没值，后面有值
+      // 如果都没值
+      let obj = null
+      const name = this.formData.directoryName
+      const state = this.formData.state
+      if (name && !state) {
+        obj = { directoryName: this.formData.directoryName }
+      } else if (name && state) {
+        obj = this.formData
+      } else if (!name && state) {
+        obj = { state: this.formData.state }
+      } else {
+        alert('请先输入再查询')
+      }
+      const { data: { counts, items } } = await list(obj)
+      this.tableData = items
+      this.total = counts
     },
     resetBtn (formRef) {
       this.formData = {
         directoryName: '',
         state: ''
       }
+      this.getList(this.page)
     },
     async editBtn (row) {
+      // console.log(row)
+      // await this.$refs.DirectorysAddRef.getDetail(row.id)
       await this.$refs.DirectorysAddRef.getDetail(row.id)
       this.showDialog = true
     },
@@ -170,7 +212,7 @@ export default {
           type: 'warning'
         })
         await remove(id)
-        await this.getList()
+        await this.getList(this.page)
         this.$message.success('删除成功')
       } catch (error) {
         console.log(error)
@@ -180,7 +222,7 @@ export default {
   watch: {
     page: {
       handler (newVal) {
-        this.getList()
+        this.getList(this.page)
       },
       deep: true
     }
@@ -191,6 +233,16 @@ export default {
 <style scoped lang='less'>
 .card-box {
   margin:12px;
+    /deep/ .head-breadcrumb {
+    height: 40x;
+   padding-bottom: 15px;
+   margin-bottom: 15px;
+    border-bottom: 2px solid #EBEEF5;
+ .el-breadcrumb__inner a ,
+   .el-breadcrumb__inner.is-link{
+      color: #606266;
+    }
+  }
   .table-box {
     margin: 10px 0 20px;
   }

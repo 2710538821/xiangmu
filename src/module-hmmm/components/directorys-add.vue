@@ -8,7 +8,7 @@
 >
   <el-form  ref="formDataRef" :model="formData" :rules="formDataRules" label-width="80px">
   <el-form-item label="所属学科" v-if="!$route.query.id">
-     <el-select v-model="formData.subjectID" placeholder="请选择" class="W80" @focus="selBtn">
+     <el-select v-model="formData.subjectID" placeholder="请选择" class="W80">
         <el-option
         v-for="item in subjectList "
          :key="item.value"
@@ -38,6 +38,9 @@ export default {
     showDialog: {
       type: Boolean,
       default: false
+    },
+    subjectName: {
+      type: String
     }
   },
   data () {
@@ -57,16 +60,16 @@ export default {
       return this.formData.id ? '修改' : '新增'
     }
   },
+  async mounted () {
+    const { data } = await getSimpleList(this.formData.subjectName)
+    this.subjectList = data
+  },
   methods: {
     // 获取目录详情
     async  getDetail (id) {
       const { data } = await detail(id)
       this.formData = data
       // console.log(data)
-    },
-    async selBtn () {
-      const { data } = await getSimpleList(this.formData.subjectName)
-      this.subjectList = data
     },
     async btnOk () {
       try {
@@ -76,9 +79,17 @@ export default {
           // 编辑
           await update(this.formData)
         } else {
-          await add(this.formData)
+          // 判断是学科过来的还是侧边栏过来的
+          if (this.subjectName) {
+            // 把subjectName转换成subjectID
+            const { data } = await getSimpleList(this.subjectName) // 枚举
+            const index = data.findIndex(item => item.label === this.subjectName)
+            await add({ ...this.formData, subjectID: data[index].value })
+          } else {
+            await add(this.formData)
+          }
         }
-        this.$message.success('添加目录成功')
+        this.$message.success(`${this.showTitle}目录成功`)
         // 通知父组件更新
         this.$emit('update-directory')
         this.$emit('update:showDialog', false)
@@ -89,7 +100,7 @@ export default {
     Close () {
       this.$refs.formDataRef.resetFields()
       this.formData = {
-        subjectName: '',
+        subjectID: '',
         directoryName: ''
       }
       this.$emit('update:showDialog', false)
@@ -101,5 +112,8 @@ export default {
 <style scoped lang='less'>
 .W80 {
   width: 100%;
+}
+/deep/.el-dialog{
+  z-index: 1000;
 }
 </style>

@@ -25,7 +25,7 @@
 </el-row>
 <!-- 信息 -->
   <el-alert
-    :title="`数据一共${page.total}条`"
+    :title="`数据一共${total}条`"
     type="info"
     show-icon>
   </el-alert>
@@ -94,10 +94,10 @@
       </el-table-column>
     </el-table>
     <!-- 页码 -->
-      <PageTool :page.sync='page'/>
+      <PageTool :page='page' :total="total"/>
  </el-card>
 <!-- 新增学科弹框 -->
-<SubjectsAdd ref="SubjectsAddRef" :showDialog.sync="showDialog" @updateSubject='loadSubjectsList'/>
+<SubjectsAdd ref="SubjectsAddRef" :show-dialog.sync="showDialog" @updateSubject='loadSubjectsList'/>
   </div>
 </template>
 
@@ -120,9 +120,9 @@ export default {
       tableData: [],
       page: {
         page: 1,
-        pagesize: 10,
-        total: 0
+        pagesize: 10
       },
+      total: 0,
       showDialog: false
     }
   },
@@ -132,7 +132,7 @@ export default {
   methods: {
     async loadSubjectsList () {
       const { data: { counts, items } } = await getSubjectsList({ ...this.page, ...this.formData })
-      this.page.total = counts
+      this.total = counts
       this.tableData = items
     },
     // 格式化时间
@@ -173,7 +173,6 @@ export default {
       }
     },
     toDirectorys (row) {
-      debugger
       this.$router.push({
         path: '/subjects/directorys',
         query: {

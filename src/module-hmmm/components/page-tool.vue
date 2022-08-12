@@ -8,7 +8,7 @@
       :page-sizes="[5, 10, 20, 50]"
       :page-size="page.pagesize"
       layout=" prev, pager, next, sizes, jumper"
-      :total="page.total">
+      :total="total">
     </el-pagination>
         </el-row>
 </template>
@@ -18,6 +18,10 @@ export default {
     page: {
       type: Object,
       require
+    },
+    total: {
+      type: Number,
+      default: 0
     }
   },
   methods: {
