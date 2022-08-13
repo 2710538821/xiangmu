@@ -1,30 +1,33 @@
 <template>
-  <div class='container'>
-    <el-dialog title="新增用户" :visible="dialogVisible" @close="btnCancel">
+  <div class="container">
+    <el-dialog :title="showTitle" :visible="dialogVisible" @close="btnCancel">
       <el-form :model="companysForm" :rules="rule" ref="ruleForm">
         <el-form-item label="企业名称" :label-width="formLabelWidth" prop="shortName">
-          <el-input v-model="companysForm.shortName" autocomplete="off"></el-input>
+          <el-input v-model="companysForm.shortName" autocomplete="off" style="width:440px"></el-input>
         </el-form-item>
         <el-form-item label="所属公司" :label-width="formLabelWidth" prop="company">
-          <el-input v-model="companysForm.company" autocomplete="off"></el-input>
+          <el-input v-model="companysForm.company" autocomplete="off" style="width:440px"></el-input>
         </el-form-item>
-        <el-form-item label="城市地区" :label-width="formLabelWidth" prop="province">
-          <el-select v-model="companysForm.province" placeholder="请选择">
-            <el-option label="北京市" value="110000"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+        <el-form-item label-width="120px">
+          <span>https://www.tianyancha.com （在此可查询所属公司全称及简称）</span>
+        </el-form-item>
+        <el-row class="row">
+          <el-form-item label="城市地区" :label-width="formLabelWidth" prop="province">
+          <el-select v-model="companysForm.province" placeholder="请选择" @change="changeP">
+            <el-option :label="item" :value="item" v-for="item in provinces()" :key="item"></el-option>
           </el-select>
-          </el-form-item>
-          <el-form-item label="" :label-width="formLabelWidth" prop="city">
+        </el-form-item>
+        <el-form-item label="" prop="city">
           <el-select v-model="companysForm.city" inline="true" placeholder="请选择">
-            <el-option label="东城区" value="110101"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+            <el-option :label="item" :value="item" v-for="item in citysList" :key="item"></el-option>
           </el-select>
         </el-form-item>
+        </el-row>
         <el-form-item label="方向(企业标签)" :label-width="formLabelWidth" prop="tags">
-          <el-input v-model="companysForm.tags" autocomplete="off"></el-input>
+          <el-input v-model="companysForm.tags" autocomplete="off" style="width:440px"></el-input>
         </el-form-item>
         <el-form-item label="备注" :label-width="formLabelWidth" prop="remarks">
-          <el-input type="textarea" v-model="companysForm.remarks"></el-input>
+          <el-input type="textarea" v-model="companysForm.remarks" style="width:440px"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -36,7 +39,8 @@
 </template>
 
 <script>
-import { addCompanysList } from '../../api/hmmm/companys'
+import { addCompanysList, getCompanysDetail, editCompanysDetail } from '../../api/hmmm/companys'
+import { provinces, citys } from '@/api/hmmm/citys'
 
 export default {
   props: {
@@ -47,14 +51,21 @@ export default {
   },
   data () {
     return {
+      provinces,
+      provincesList: [],
+      citys,
+      citysList: [],
       formLabelWidth: '120px',
       companysForm: {
         shortName: '',
         company: '',
         province: '',
+        city: '',
         tags: '',
         remarks: '',
-        isFamous: true
+        isFamous: true,
+        code: '',
+        message: true
       },
 
       rule: {
@@ -83,9 +94,16 @@ export default {
     async btnOK () {
       try {
         await this.$refs.ruleForm.validate()
-        await addCompanysList(this.companysForm)
-        this.$emit('update:dialogVisible', false)
-        this.$emit('update-data')
+        if (this.companysForm.id) {
+          await editCompanysDetail(this.companysForm)
+          this.$emit('update:dialogVisible', false)
+          this.$emit('update-data')
+        } else {
+          await this.$refs.ruleForm.validate()
+          await addCompanysList(this.companysForm)
+          this.$emit('update:dialogVisible', false)
+          this.$emit('update-data')
+        }
       } catch (error) {
         console.log(error)
       }
@@ -100,15 +118,37 @@ export default {
       }
       this.$emit('update:dialogVisible', false)
       this.$refs.ruleForm.resetFields()
+    },
+    changeP (e) {
+      provinces()
+      console.log(e)
+      citys(e)
+      this.citysList = citys(e)
+      this.companysForm.city = citys(e)[0]
+    },
+    async getDetail (id) {
+      const res = await getCompanysDetail(id)
+      // console.log(res.data)
+      this.companysForm = res.data
+      if (this.companysForm.isFamous === 1) {
+        this.companysForm.isFamous = true
+      } else {
+        this.companysForm.isFamous = false
+      }
+      // console.log(this.companysForm)
+    }
+  },
+  computed: {
+    showTitle () {
+      return this.companysForm.id ? '编辑用户' : '新增用户'
     }
   }
-  // computed: {
-  //   // showTitle () {
-  //   //   return this.formData.id ? '编辑用户' : '新增用户'
-  //   // }
-  // }
 }
 </script>
 
-<style scoped lang='less'>
+<style scoped lang="less">
+.dialog-footer{
+  display: flex;
+  justify-content: center;
+}
 </style>

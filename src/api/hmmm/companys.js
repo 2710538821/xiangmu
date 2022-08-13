@@ -25,3 +25,7 @@ export const delCompanysList = id => createAPI(`/companys/${id}`, 'delete')
 export const addCompanysList = data => createAPI('/companys', 'post', data)
 
 export const editState = data => createAPI(`/companys/${data.id}/${data.state}`, 'post')
+
+export const getCompanysDetail = id => createAPI(`/companys/${id}`, 'get')
+
+export const editCompanysDetail = data => createAPI(`/companys/${data.id}`, 'put', data)
