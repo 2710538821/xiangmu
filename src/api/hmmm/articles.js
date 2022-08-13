@@ -16,16 +16,16 @@ export const getList = data => createAPI('/articles', 'get', data)
 export const simple = data => createAPI('/articles/simple', 'get', data)
 
 // 文章详情
-export const detail = data => createAPI(`/articles/${data.detailId}`, 'get', data)
+export const detail = id => createAPI(`/articles/${id}`, 'get')
 
 // 文章添加
 export const add = data => createAPI('/articles', 'post', data)
 
 // 文章修改
-export const update = data => createAPI(`/articles/${data.id}`, 'post', data)
+export const update = data => createAPI(`/articles/${data.id}`, 'put', data)
 
 // 文章删除
-export const remove = data => createAPI(`/articles/${data.detailId}`, 'delete', data)
+export const remove = id => createAPI(`/articles/${id}`, 'delete')
 
 // 文章状态
 export const changeState = data => createAPI(`/articles/${data.id}/${data.state}`, 'post', data)
