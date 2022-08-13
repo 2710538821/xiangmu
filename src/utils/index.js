@@ -112,6 +112,7 @@ export function getQueryObject (url) {
 export function getByteLen (val) {
   let len = 0
   for (let i = 0; i < val.length; i++) {
+    // eslint-disable-next-line no-control-regex
     if (val[i].match(/[^\x00-\xff]/gi) != null) {
       len += 1
     } else {
@@ -180,6 +181,7 @@ export function objectMerge (target, source) {
     return source.slice()
   }
   for (const property in source) {
+    // eslint-disable-next-line no-prototype-builtins
     if (source.hasOwnProperty(property)) {
       const sourceProperty = source[property]
       if (typeof sourceProperty === 'object') {
@@ -311,6 +313,7 @@ export function deepClone (source) {
   }
   const targetObj = source.constructor === Array ? [] : {}
   for (const keys in source) {
+    // eslint-disable-next-line no-prototype-builtins
     if (source.hasOwnProperty(keys)) {
       if (source[keys] && typeof source[keys] === 'object') {
         targetObj[keys] = source[keys].constructor === Array ? [] : {}
