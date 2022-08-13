@@ -87,7 +87,7 @@ export default {
   display: inline-block;
   width: 150px;
 }
-::v-deep .el-upload-list--text {
+:deep(.el-upload-list--text) {
   width: 150px;
 }
 

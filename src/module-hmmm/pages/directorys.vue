@@ -233,7 +233,7 @@ export default {
 <style scoped lang='less'>
 .card-box {
   margin:12px;
-    /deep/ .head-breadcrumb {
+    :deep(.head-breadcrumb) {
     height: 40x;
    padding-bottom: 15px;
    margin-bottom: 15px;

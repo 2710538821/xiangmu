@@ -56,7 +56,7 @@ export default {
 </script>
 
 <style scoped lang='less'>
-/deep/.ql-container{
+:deep(.ql-container){
   height: 260px;
 }
 </style>

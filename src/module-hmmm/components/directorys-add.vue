@@ -113,7 +113,7 @@ export default {
 .W80 {
   width: 100%;
 }
-/deep/.el-dialog{
+:deep(.el-dialog){
   z-index: 1000;
 }
 </style>
