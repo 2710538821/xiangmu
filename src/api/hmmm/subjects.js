@@ -12,3 +12,21 @@ import { createAPI } from '@/utils/request'
 export const subjectsList = () => createAPI('/subjects', 'get')
 
 export const subjectsSimpleList = () => createAPI('/subjects/simple', 'get')
+
+// 学科列表
+export const getSubjectsList = params => createAPI('/subjects', 'get', params)
+
+// 新增学科
+export const addSubject = data => createAPI('/subjects', 'post', data)
+
+// 根据id获得学科详情
+export const getSubjectById = id => createAPI(`/subjects/${id}`, 'get')
+
+// 学科修改
+export const editSubjectById = data => createAPI(`/subjects/${data.id}`, 'put', data)
+
+// 学科删除
+export const removeSubjectById = id => createAPI(`/subjects/${id}`, 'delete')
+
+// 获取学科简单列表
+export const getSimpleList = data => createAPI('/subjects/simple', 'get', data)
