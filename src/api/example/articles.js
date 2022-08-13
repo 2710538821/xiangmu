@@ -1,6 +1,7 @@
 import { createAPI, createFormAPI } from '@/utils/request'
 
 export const list = data => createAPI('/articles/list', 'get', data)
+export const formData = data => createFormAPI('/articles', 'get', data)
 export const types = [
   '类型一',
   '类型二',

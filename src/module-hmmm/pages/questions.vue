@@ -3,9 +3,7 @@
     <el-card>
       <!-- 新增按钮 -->
       <el-row type="flex" justify="end">
-        <el-button type="success" icon="el-icon-edit" size="small"
-          >新增试题</el-button
-        >
+        <el-button type="success" icon="el-icon-edit" size="small">新增试题</el-button>
       </el-row>
       <!-- 选择项表单 -->
       <!-- 第一行选项 -->
@@ -110,16 +108,19 @@
 </template>
 
 <script>
-export default {};
+export default {}
 </script>
 
 <style scoped lang="less">
 .el-card {
   margin: 0 10px;
+
   .pailie {
+
     // border: 1px solid #000;
     .itemCol {
       border: 1px solid #000;
+
       /deep/ .el-form-item__label {
         width: 77px;
         border: 1px solid #000;
