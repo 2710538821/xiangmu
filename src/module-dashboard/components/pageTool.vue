@@ -6,8 +6,8 @@
       :current-page="Number(paginationPage)"
       :total="Number(total)"
       :page-size="Number(paginationPagesize)"
-      :page-sizes="[10,20,30, 50]"
-      layout="sizes, prev, pager, next, jumper"
+      :page-sizes="[5,10,20, 50]"
+      layout="total, sizes, prev, pager, next, jumper"
       >
       </el-pagination>
   </div>

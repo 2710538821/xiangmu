@@ -1,5 +1,7 @@
 <template>
-  <div class='container'>组题列表</div>
+  <div class='container'>
+    添加
+  </div>
 </template>
 
 <script>
