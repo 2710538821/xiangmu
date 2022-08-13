@@ -7,6 +7,7 @@
  * 目录
  */
 
+<<<<<<< HEAD
 import { createAPI } from '@/utils/request'
 
 // 目录列表
@@ -14,6 +15,15 @@ export const directorysList = (data) => createAPI('/directorys', 'get', data)
 
 // 目录简单列表
 export const direcotrysSimpleList = () => createAPI('/directorys/simple', 'get')
+=======
+import createAPI from '@/utils/request'
+
+// 目录列表
+export const list = data => createAPI('/direcotrys', 'get', data)
+
+// 目录简单列表
+export const simple = data => createAPI('/direcotrys', 'post')
+>>>>>>> 8a3aedff0ea3453a226a50837002e795b217d330
 
 // 目录详情
 export const detail = data =>

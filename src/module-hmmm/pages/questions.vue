@@ -482,17 +482,20 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped lang="less">
 .el-card {
   margin: 0 10px;
+
   margin-bottom: 30px;
+
   .pailie {
+
     // border: 1px solid #000;
     margin-top: 20px;
     .itemCol {
+
       // border: 1px solid #000;
       :deep(.el-form-item__label) {
         width: 30px;
@@ -503,7 +506,6 @@ export default {
       }
       #dierhang {
         margin-left: 15px;
-      }
     }
   }
   .colorBtn {
@@ -547,5 +549,6 @@ export default {
   :deep(.el-pagination){
     margin-top: 20px;
   }
+}
 }
 </style>

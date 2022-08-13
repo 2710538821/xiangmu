@@ -11,11 +11,11 @@
 export const status = [
   {
     value: 1,
-    label: '启用'
+    label: '已启用'
   },
   {
     value: 0,
-    label: '禁用'
+    label: '已禁用'
   }
 ]
 
