@@ -31,7 +31,7 @@ export const questionsShangXia = (data) => createAPI(`/questions/choice/${data.i
 export const questionsAddRemove = (data) => createAPI(`/questions/choice/${data.id}/${data.choiceState}`, 'patch', data)
 
 // 组题列表
-export const getTopicList = (id) => createAPI('/questions/randoms', 'get')
+export const getTopicList = data => createAPI('/questions/randoms', 'get', data)
 
 // yege
 // 获取题库详情
@@ -51,7 +51,7 @@ export const getQuestionDetailAPI = data => createAPI(`/questions/${data}`, 'GET
 // 获取提足列表的数据
 export const getQuestionListAPI = data => createAPI(`/questions/randoms?page=${data.page}&pagesize=${data.pagesize}&keyword=${data.keywords}`, 'GET')
 // 删除题组的数据
-export const delQuestionDataAPI = id => createAPI(`/questions/randoms/${id},'DELETE`)
+export const delQuestionDataAPI = data => createAPI(`/questions/randoms/${data.id}`, 'DELETE'.data)
 // 预览题组的数据
 export const perviewQuestionAPI = id => createAPI(`/questions/${id}?id=${id}`, 'GET')
 // 修改题库

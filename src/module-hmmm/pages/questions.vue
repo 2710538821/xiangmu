@@ -217,7 +217,7 @@
                 icon="el-icon-edit"
                 circle
                 class="colorBtn"
-                @click="editBtn"
+                @click="editBtn(row.id)"
               ></el-button>
               <!-- 删除 -->
               <el-button
@@ -355,6 +355,7 @@ export default {
       } = await subjectsList()
       // console.log(items)
       this.subjectsData = items
+
       // console.log(this.subjectsData)
     },
     // 获取选择学科的id
@@ -393,8 +394,13 @@ export default {
       )
     },
     // 跳转到修改数据的页面
-    editBtn () {
-      this.$router.push('/questions/new')
+    editBtn (id) {
+      this.$router.push({
+        path: '/questions/new',
+        query: {
+          id
+        }
+      })
     },
     // 跳转到添加数据的页面
     addBtn () {

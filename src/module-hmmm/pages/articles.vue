@@ -329,12 +329,12 @@ export default {
   margin-left: 20px;
   margin-right: 50px;
 }
-/deep/.el-icon-film {
+:deep(.el-icon-film) {
     color: #00f;
     font-size: 18px;
 
 }
-/deep/.video-body {
+:deep(.video-body) {
  position: fixed;
  top: 0;
  left: 0;

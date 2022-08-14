@@ -19,8 +19,8 @@
               class="elSelect"
             >
               <el-option
-                v-for="item in subJcetList"
-                :key="item.value"
+                v-for="(item,index) in subJcetList"
+                :key="index"
                 :label="item.label"
                 :value="item.value"
               ></el-option>
@@ -33,8 +33,8 @@
               class="elSelect"
             >
               <el-option
-                v-for="item in catalogue"
-                :key="item.value"
+                v-for="(item,index) in catalogue"
+                :key="index"
                 :label="item.label"
                 :value="item.value"
               ></el-option>
@@ -101,8 +101,8 @@
           <!-- 题型 -->
           <el-form-item label="题型" prop="questionType">
             <el-radio-group
-              v-for="item in questionTypeList"
-              :key="item.value"
+              v-for="(item,index) in questionTypeList"
+              :key="index"
               v-model="questionForm.questionType"
             >
               <el-radio style="margin-right: 30px" :label="item.value">{{
@@ -114,8 +114,8 @@
           <el-form-item label="难度" prop="difficulty">
             <el-radio-group
               v-model="questionForm.difficulty"
-              v-for="item in difficultyList"
-              :key="item.value"
+              v-for="(item,index) in difficultyList"
+              :key="index"
             >
               <el-radio style="margin-right: 30px" :label="item.value">{{
                 item.label
@@ -160,14 +160,13 @@
           <el-form-item label="试题标签">
             <el-select
               multiple
-              v-model="questionForm.tags"
+              v-model="tagsList"
               placeholder="请选择活动区域"
               collapse-tags
-              @change="changeTags"
             >
               <el-option
-                v-for="item in catalogue"
-                :key="item.value"
+                v-for="(item,index) in catalogue"
+                :key="index"
                 :label="item.label"
                 :value="item.label"
               ></el-option>
@@ -241,8 +240,8 @@ export default {
           }
         ],
         answer: '', // 答案解析
-        remarks: '' // 题目备注
-        // tags: ''
+        remarks: '', // 题目备注
+        tags: ''
       },
       questionOptionsCopy: [], // 选项的拷贝
       subJcetList: [], // 存放学科数据对象
@@ -276,6 +275,7 @@ export default {
   },
   created () {
     this.questionOptionsCopy = this.questionForm.options
+    this.catalogue = []
     // 获取学科分类
     this.questionSubject()
     // 获取公司名称
@@ -321,9 +321,11 @@ export default {
       this.CitysList.push(...data)
     },
     // 改变标签
-    changeTags (value) {
-      this.tagsList = value
-    },
+    // changeTags (value) {
+    //   console.log(value)
+    //   this.tagsList.splice(0)
+    //   this.tagsList.push(value)
+    // },
     // 选项的单选回调
     // optionRadio (code) {
     //   // 循环将除了这个code的对象的isRight改成 0
@@ -342,8 +344,12 @@ export default {
           tags: this.tagsList.join(',')
         })
         this.$message.success('添加成功')
+        // 跳转之前将所有的目录数据对象清空
+        this.catalogue = []
         // 跳转基础题库
-        this.$router.push('/questions/list')
+        this.$router.push({
+          path: '/questions/questions'
+        })
         // 删除表单的验证
         this.$refs.questionForm.resetFields()
       } catch (error) {
@@ -375,7 +381,23 @@ export default {
       // 发请求
       try {
         const { data } = await getQuestionDetailAPI(this.$route.query?.id)
-        this.questionForm.catalogID = data.catalogID
+        console.log(data)
+        this.questionForm = JSON.parse(JSON.stringify(data))
+        // // 回显目录
+        await this.catalogueList(this.questionForm.subjectID)
+        this.questionForm.catalogID = this.catalogue?.find(item => {
+          return item.value === data.catalogID
+        }).value
+
+        // 回显难度
+        this.questionForm.difficulty = Number(data.difficulty)
+        console.log(this.questionForm.difficulty)
+        // 回显城市
+        this.questionForm.city = this.CitysList.find(item => item === data.city)
+        // 回显题型
+        this.questionForm.questionType = Number(data.questionType)
+        // 回显tags
+        this.tagsList.push(...data.tags.split(','))
         // 数据赋值
       } catch (error) {
         this.$message.error(error.message)
@@ -388,6 +410,7 @@ export default {
       this.catalogue.splice(0)
       this.questionForm.catalogID = ''
       if (newvalue) {
+        if (this.$route.query.id) return
         this.catalogueList(newvalue)
       }
     },

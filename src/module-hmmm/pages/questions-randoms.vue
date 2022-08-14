@@ -36,8 +36,8 @@
           </el-table-column>
           <el-table-column prop="userName" label="录入人"> </el-table-column>
           <el-table-column prop="date" label="操作" >
-            <template slot-scope="{row}">
-              <el-button @click="delTopic(row.id)" type="danger" icon="el-icon-delete" plain circle>
+            <template v-slot="{row}">
+              <el-button @click="delList(row.id)" type="danger" icon="el-icon-delete" plain circle>
               </el-button>
             </template>
 
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { getTopicList, delTopicList } from '@/api/hmmm/questions'
+import { getTopicList, delQuestionDataAPI } from '@/api/hmmm/questions'
 import constants from '@/api/constants/constants'
 export default {
   name: 'QuestionsRandoms',
@@ -102,17 +102,21 @@ export default {
       this.page.total = res.data.counts
       this.title = '数据一共有' + res.data.counts + '条'
     },
-    async delTopic (id) {
+    async delList (id) {
       try {
-        await this.$confirm('此操作将永久删除该题组，是否继续？')
-        await delTopicList(id)
-        this.getTopicList()
+        await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        console.log(id)
+        await delQuestionDataAPI(id)
+        await this.getTopicList()
         this.$message.success('删除成功')
       } catch (error) {
+        this.$message.info('已取消删除')
         console.log(error)
       }
-      // this.$message.success('删除成功')
-      // this.getTopicList()
     },
     formatQuestionType (row, column, cellValue, index) {
       const res = constants.questionType.find(

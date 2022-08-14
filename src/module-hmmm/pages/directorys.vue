@@ -185,7 +185,11 @@ export default {
       } else if (!name && state) {
         obj = { state: this.formData.state }
       } else {
-        alert('请先输入再查询')
+        obj = this.page
+        this.$message({
+          message: '请先输入再查询',
+          type: 'warning'
+        })
       }
       const { data: { counts, items } } = await list(obj)
       this.tableData = items
@@ -212,6 +216,7 @@ export default {
           type: 'warning'
         })
         await remove(id)
+        this.page.page = this.page.page > 1 && this.tableData.length === 1 ? this.page.page - 1 : this.page.page
         await this.getList(this.page)
         this.$message.success('删除成功')
       } catch (error) {

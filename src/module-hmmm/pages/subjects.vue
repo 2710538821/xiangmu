@@ -166,6 +166,7 @@ export default {
           type: 'warning'
         })
         await removeSubjectById(id)
+        this.page.page = this.page.page > 1 && this.tableData.length === 1 ? this.page.page - 1 : this.page.page
         await this.loadSubjectsList()
         this.$message.success('删除成功')
       } catch (error) {

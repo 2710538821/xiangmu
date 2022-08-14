@@ -11,7 +11,7 @@
         <el-form-item label-width="120px">
           <span>https://www.tianyancha.com （在此可查询所属公司全称及简称）</span>
         </el-form-item>
-        <el-row class="row">
+        <el-row class="row" type="flex">
           <el-form-item label="城市地区" :label-width="formLabelWidth" prop="province">
           <el-select v-model="companysForm.province" placeholder="请选择" @change="changeP">
             <el-option :label="item" :value="item" v-for="item in provinces()" :key="item"></el-option>

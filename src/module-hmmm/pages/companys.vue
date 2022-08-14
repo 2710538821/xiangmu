@@ -5,7 +5,7 @@
       <el-form label-width="80px" :model="formData">
         <el-row type="flex">
           <el-form-item label="标签名称:" width="180px">
-            <el-input placeholder="请输入" v-model="tagsData"></el-input>
+            <el-input placeholder="请输入编号" v-model="tagsData" suffix-icon=“xxxx”></el-input>
           </el-form-item>
           <el-form-item label="省:">
             <el-select placeholder="请选择" v-model="formData.province" @change="changeProvinces">
@@ -18,7 +18,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="企业简称:" width="180px">
-            <el-input placeholder="请输入" v-model="formData.shortName"></el-input>
+            <el-input placeholder="请输入" v-model="formData.shortName" suffix-icon=“xxxx”></el-input>
           </el-form-item>
         </el-row>
 
@@ -30,14 +30,14 @@
             </el-select>
           </el-form-item>
           <el-form-item label="操作：" width="180px">
-            <el-button size="mini" @click="cleanBtn">清除</el-button>
-            <el-button type="primary" size="mini" @click="searchBtn">搜索</el-button>
+            <el-button @click="cleanBtn">清除</el-button>
+            <el-button type="primary" @click="searchBtn">搜索</el-button>
           </el-form-item>
         </el-row>
       </el-form>
       <!-- 新增按钮 -->
       <el-row class="add">
-        <el-button type="primary" icon="el-icon-edit" size="mini" @click="addCompany">新增用户</el-button>
+        <el-button type="primary" icon="el-icon-edit"  @click="addCompany">新增用户</el-button>
       </el-row>
       <!-- 提示条 -->
       <el-alert class="alert" :title="title" type="info" show-icon :closable="false"></el-alert>

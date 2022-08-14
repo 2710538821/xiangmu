@@ -8,12 +8,12 @@
     <!-- 单选框组 -->
     <el-radio-group
       v-if="questionForm.questionType === 1"
-      v-model="OptionIsRight"
+      v-model="OptionIsRightCopy"
     >
       <el-radio
         :label="optionObj.code"
-        v-for="optionObj in questionOptions"
-        :key="optionObj.code"
+        v-for="(optionObj,index) in questionOptions"
+        :key="index"
       >
         <span>{{ optionObj.code }} : </span>
         <el-input v-model="optionObj.title"></el-input>
@@ -39,8 +39,8 @@
     >
       <el-checkbox
         :label="optionObj.code"
-        v-for="optionObj in questionOptions"
-        :key="optionObj.code"
+        v-for="(optionObj,index) in questionOptions"
+        :key="index"
       >
         <span>{{ optionObj.code }} : </span>
         <el-input v-model="optionObj.title"></el-input>
@@ -71,9 +71,9 @@ export default {
   components: {
     uploadImg
   },
-  inject: ['reload'],
   created () {
     this.questionOptions = this.questionForm.options
+    this.OptionIsRightCopy = this.OptionIsRight
   },
   props: {
     questionForm: {
@@ -90,7 +90,8 @@ export default {
   },
   data () {
     return {
-      questionOptions: []
+      questionOptions: [],
+      OptionIsRightCopy: null
     }
   },
 
@@ -133,7 +134,9 @@ export default {
         return isRightArr
       },
       set (newValue) {
-        // console.log(newValue)
+        console.log(newValue)
+        this.questionForm.options.forEach(item => { item.isRight = false })
+        console.log(this.questionForm.options)
         this.questionForm.options.forEach(obj => {
           newValue.forEach(item => {
             if (obj.code === item) {
@@ -151,6 +154,7 @@ export default {
     //   this.reload()
     // }
   }
+
 }
 </script>
 
